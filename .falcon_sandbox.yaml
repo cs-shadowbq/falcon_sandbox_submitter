@@ -1,0 +1,3 @@
+verbose: false
+clientSecret: SECRET-FROM-YAML-FILE
+clientId: ID-FROM-YAML-FILE
