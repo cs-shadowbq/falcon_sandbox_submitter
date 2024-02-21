@@ -45,7 +45,7 @@ build:
 	@echo "\033[32mBuilding ----> \033[m"
 	
 	env GOOS=linux GOARCH=amd64 go build -ldflags "$(GOLD_FLAGS) ${SILVER_FALGS}" -o build/falcon_sandbox_linux_amd64 main.go
-	env GOOS=windows GOARCH=amd64 go build -ldflags "$(GOLD_FLAGS) ${SILVER_FALGS}"-o build/falcon_sandbox.exe main.go
+	env GOOS=windows GOARCH=amd64 go build -ldflags "$(GOLD_FLAGS) ${SILVER_FALGS}" -o build/falcon_sandbox.exe main.go
 	env GOOS=darwin GOARCH=amd64 go build -ldflags "$(GOLD_FLAGS) ${SILVER_FALGS}" -o build/falcon_sandbox_darwin_amd64 main.go
 
 clean:
