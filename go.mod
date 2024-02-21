@@ -1,4 +1,4 @@
-module github.com/cs-shadowbq/falcon_sandbox
+module github.com/cs-shadowbq/falcon_sandbox_submitter
 
 go 1.20
 

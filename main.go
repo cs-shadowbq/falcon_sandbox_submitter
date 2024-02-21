@@ -21,7 +21,7 @@ THE SOFTWARE.
 */
 package main
 
-import "github.com/cs-shadowbq/falcon_sandbox/cmd"
+import "github.com/cs-shadowbq/falcon_sandbox_submitter/cmd"
 
 func main() {
 	cmd.Execute()
