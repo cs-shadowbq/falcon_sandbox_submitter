@@ -1,7 +1,7 @@
 # CrowdStrike Falcon Sandbox Submitter
 
-[![Go Report Card](https://goreportcard.com/badge/github.com/cs-shadowbq/falcon-sandbox)](https://goreportcard.com/report/github.com/cs-shadowbq/falcon-sandbox)
-[![GoDoc](https://godoc.org/github.com/cs-shadowbq/falcon-sandbox?status.svg)](https://godoc.org/github.com/cs-shadowbq/falcon-sandbox)
+[![Go Report Card](https://goreportcard.com/badge/github.com/cs-shadowbq/falcon_sandbox_submitter)](https://goreportcard.com/report/github.com/cs-shadowbq/falcon_sandbox_submitter)
+[![GoDoc](https://godoc.org/github.com/cs-shadowbq/falcon_sandbox_submitter?status.svg)](https://godoc.org/github.com/cs-shadowbq/falcon_sandbox_submitter)
 
 This tool is a golang implementation for submitting files to the CrowdStrike Falcon Sandbox. The CrowdStrike Falcon Sandbox is part of the CrowdStrike Counter Adversary Operations™ harnesses the power of the CrowdStrike Falcon® platform to provide a comprehensive, automated, and effective solution for identifying and stopping adversary operations. The CrowdStrike Falcon Sandbox provides deep analysis of evasive and unknown threats, enriches the results with intelligence, and delivers actionable indicators of compromise (IOCs) to the Falcon platform.
 
