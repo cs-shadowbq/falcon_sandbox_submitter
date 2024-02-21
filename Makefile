@@ -8,21 +8,21 @@
 cat := $(if $(filter $(OS),Windows_NT),type,cat)
 PACKAGE_VERSION := $(shell $(cat) VERSION)
 
-GOLD_FLAGS=-X github.com/cs-shadowbq/falcon_sandbox/cmd.Version=$(PACKAGE_VERSION)
+GOLD_FLAGS=-X github.com/cs-shadowbq/falcon_sandbox_submitter/cmd.Version=$(PACKAGE_VERSION)
 
 SILVER_FALGS := 
 
 # Combine SILVER_FLAGS if Variable not empty
 ifdef FALCON_CLIENT_ID
-SILVER_FALGS+=-X github.com/cs-shadowbq/falcon_sandbox/cmd.buildClientId=${FALCON_CLIENT_ID}
+SILVER_FALGS+=-X github.com/cs-shadowbq/falcon_sandbox_submitter/cmd.buildClientId=${FALCON_CLIENT_ID}
 endif
 
 ifdef FALCON_CLIENT_SECRET
-SILVER_FALGS+= -X github.com/cs-shadowbq/falcon_sandbox/cmd.buildClientSecret=${FALCON_CLIENT_SECRET}
+SILVER_FALGS+= -X github.com/cs-shadowbq/falcon_sandbox_submitter/cmd.buildClientSecret=${FALCON_CLIENT_SECRET}
 endif
 
 ifdef FALCON_API_BASE_URL
-SILVER_FALGS+= -X github.com/cs-shadowbq/falcon_sandbox/cmd.buildApiBaseUrl=${FALCON_API_BASE_URL}
+SILVER_FALGS+= -X github.com/cs-shadowbq/falcon_sandbox_submitter/cmd.buildApiBaseUrl=${FALCON_API_BASE_URL}
 endif
 
 BUILD_DOCS := README.md LICENSE example_config.yml

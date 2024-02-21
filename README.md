@@ -108,7 +108,7 @@ $> make all
 Raw Compilation example without using the Makefile:
 
 ```shell
-$> go build -ldflags "-X github.com/cs-shadowbq/falcon_sandbox/cmd.CLIENT_ID=YOUR_CLIENT_ID -X github.com/cs-shadowbq/falcon_sandbox/cmd.CLIENT_SECRET" -o falcon-sandbox main.go
+$> go build -ldflags "-X github.com/cs-shadowbq/falcon_sandbox_submitter/cmd.buildClientId=YOUR_CLIENT_ID -X github.com/cs-shadowbq/falcon_sandbox_submitter/cmd.buildClientSecret=YOUR_CLIENT_SECRET" -o falcon-sandbox main.go
 ```
 
 ## Cross-Compilation
@@ -127,9 +127,9 @@ rm -f -rf build/*
 rm -f -rf tmp/*
 
 Building ---->
-env GOOS=linux GOARCH=amd64 go build -ldflags "-X github.com/cs-shadowbq/falcon_sandbox/cmd.Version=1.0.0" -o build/falcon_sandbox_linux_amd64 main.go
-env GOOS=windows GOARCH=amd64 go build -ldflags "-X github.com/cs-shadowbq/falcon_sandbox/cmd.Version=1.0.0" -o build/falcon_sandbox.exe main.go
-env GOOS=darwin GOARCH=amd64 go build -ldflags "-X github.com/cs-shadowbq/falcon_sandbox/cmd.Version=1.0.0" -o build/falcon_sandbox_darwin_amd64 main.go
+env GOOS=linux GOARCH=amd64 go build -ldflags "-X github.com/cs-shadowbq/falcon_sandbox_submitter/cmd.Version=x.y.z" -o build/falcon_sandbox_linux_amd64 main.go
+env GOOS=windows GOARCH=amd64 go build -ldflags "-X github.com/cs-shadowbq/falcon_sandbox_submitter/cmd.Version=x.y.z" -o build/falcon_sandbox.exe main.go
+env GOOS=darwin GOARCH=amd64 go build -ldflags "-X github.com/cs-shadowbq/falcon_sandbox_submitter/cmd.Version=x.y.z" -o build/falcon_sandbox_darwin_amd64 main.go
 ```
 
 You can get a list of supported cross-compilation targets by running the following command:
