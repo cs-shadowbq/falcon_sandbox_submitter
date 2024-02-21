@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"sort"
 
-	"github.com/cs-shadowbq/falcon_sandbox/sandbox"
+	"github.com/cs-shadowbq/falcon_sandbox_submitter/sandbox"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
