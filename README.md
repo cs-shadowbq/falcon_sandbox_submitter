@@ -12,7 +12,7 @@ To use this tool, you need to have a CrowdStrike Falcon Platform account license
 - API Client ID
 - API Client Secret
 - API Base URL
-- ROLE:  
+- API SCOPE:  
     "Sample uploads" Write *Yes*  
     "Sandbox (Falcon Intelligence)" Write *Yes*  
 
