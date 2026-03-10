@@ -1,5 +1,5 @@
 /*
-Copyright © 2024 CrowdStrike - Scott MacGregor scott.macgregor@crowdstrike.com
+Copyright © 2024-2026 CrowdStrike - Scott MacGregor scott.macgregor@crowdstrike.com
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -74,7 +74,7 @@ func init() {
 
 	rootCmd.PersistentFlags().StringVar(&clientId, "clientId", "", "Falcon CLIENT API ID")
 	rootCmd.PersistentFlags().StringVar(&clientSecret, "clientSecret", "", "Falcon CLIENT SECRET API")
-	rootCmd.PersistentFlags().StringVar(&clientCloud, "clientCloud", "", "Falcon CLIENT CLOUD API")
+	rootCmd.PersistentFlags().StringVar(&clientCloud, "clientCloud", "", "Falcon CLIENT CLOUD API (us-1, us-2, eu-1, us-gov-1, gov1, *us-gov-2, *gov2)")
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
@@ -152,8 +152,12 @@ func debugOut(phase string) {
 
 		for _, key := range keys {
 			if key == "clientsecret" {
-
-				fmt.Printf("\t%s: %v\n", key, viper.Get(key).(string)[:4]+"********")
+				secret, _ := viper.Get(key).(string)
+				if len(secret) > 4 {
+					fmt.Printf("\t%s: %v\n", key, secret[:4]+"********")
+				} else {
+					fmt.Printf("\t%s: %v\n", key, "********")
+				}
 			} else {
 				fmt.Printf("\t%s: %v\n", key, viper.Get(key))
 			}
