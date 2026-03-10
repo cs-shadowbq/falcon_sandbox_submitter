@@ -125,7 +125,9 @@ Flags:
   -f, --filename string           The file to submit to the sandbox[ie. sample.exe]
   -h, --help                      help for submit
   -n, --network_settings string   Specifies the sandbox network_settings used for analysis: ([default offline simulated tor]) (default "default")
-                                    NOTE: GOV1 clouds support only: default
+                                    NOTE: GOV1 clouds only supports No Network Connectivity ("offline") analysis. The network_settings parameter
+                                    is omitted entirely from GOV1 submissions — passing any value including "default" will be
+                                    ignored and the field will not be sent to the API.
 
 Global Flags:
       --clientCloud string    Falcon CLIENT CLOUD API (us-1, us-2, eu-1, us-gov-1, gov1, *us-gov-2, *gov2)

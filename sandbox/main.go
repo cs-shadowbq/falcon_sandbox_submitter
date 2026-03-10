@@ -114,6 +114,14 @@ func (sub CmdSubmission) SubmitFile(verbose bool) error {
 		fmt.Printf("Submitting file %s for analysis to env %d\n", filename, sub.SandboxEnvId)
 	}
 
+	// GOV1 does not accept any network_settings value; omit the field entirely
+	// by leaving it as the zero value (empty string), which json marshalling
+	// drops due to the omitempty tag on the model struct.
+	networkSettings := sub.NetworkSettings
+	if cloud == falcon.CloudUsGov1 || cloud == falcon.CloudGov1 {
+		networkSettings = ""
+	}
+
 	submitParams := falconx_sandbox.SubmitParams{
 		Context: context.Background(),
 		Body: &models.FalconxSubmissionParametersV1{
@@ -123,7 +131,7 @@ func (sub CmdSubmission) SubmitFile(verbose bool) error {
 					EnvironmentID:   sub.SandboxEnvId,
 					SubmitName:      filename,
 					ActionScript:    sub.ActionScript,
-					NetworkSettings: sub.NetworkSettings,
+					NetworkSettings: networkSettings,
 				},
 			},
 		},
