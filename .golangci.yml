@@ -9,6 +9,7 @@ linters:
     - ineffassign
     - revive
     - gocritic
+    - gosec
 
 formatters:
   enable:
@@ -41,6 +42,10 @@ linters-settings:
       - diagnostic
       - style
       - performance
+
+  gosec:
+    confidence: medium
+    severity: medium
 
 formatters-settings:
   gofumpt:
