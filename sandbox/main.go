@@ -19,10 +19,13 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
+
+// Package sandbox provides the core submission logic for the Falcon Sandbox API.
 package sandbox
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -33,12 +36,13 @@ import (
 	"github.com/go-openapi/runtime"
 )
 
+// CmdSubmission holds the parameters for a sandbox file submission.
 type CmdSubmission struct {
-	FalconClientId     string
+	FalconClientID     string
 	FalconClientSecret string
 	ClientCloud        string
 	Filename           string
-	SandboxEnvId       int32
+	SandboxEnvID       int32
 	NetworkSettings    string
 	ActionScript       string
 }
@@ -52,6 +56,7 @@ func maskSecret(s string) string {
 	return s[:4] + "********"
 }
 
+// SubmitFile submits the file described by sub to the CrowdStrike Falcon Sandbox.
 func (sub CmdSubmission) SubmitFile(verbose bool) error {
 	cloud, err := falcon.CloudValidate(sub.ClientCloud)
 	if err != nil {
@@ -59,7 +64,7 @@ func (sub CmdSubmission) SubmitFile(verbose bool) error {
 	}
 
 	client, err := falcon.NewClient(&falcon.ApiConfig{
-		ClientId:     sub.FalconClientId,
+		ClientId:     sub.FalconClientID,
 		ClientSecret: sub.FalconClientSecret,
 		Cloud:        cloud,
 		Context:      context.Background(),
@@ -78,13 +83,17 @@ func (sub CmdSubmission) SubmitFile(verbose bool) error {
 	if err != nil {
 		return fmt.Errorf("failed to open file %q: %w", fullFilename, err)
 	}
-	defer fileHandler.Close()
+	defer func() {
+		if closeErr := fileHandler.Close(); closeErr != nil && !errors.Is(closeErr, os.ErrClosed) {
+			fmt.Fprintf(os.Stderr, "warning: failed to close file %q: %v\n", fullFilename, closeErr)
+		}
+	}()
 
 	fileReadCloser := runtime.NamedReader(filename, fileHandler)
 
 	if verbose {
 		fmt.Printf("Uploading file %s\n", fullFilename)
-		fmt.Printf("Client ID:     %s\n", sub.FalconClientId)
+		fmt.Printf("Client ID:     %s\n", sub.FalconClientID)
 		fmt.Printf("Client Secret: %s\n", maskSecret(sub.FalconClientSecret))
 		fmt.Printf("Cloud:         %s\n", cloud.String())
 	}
@@ -111,7 +120,7 @@ func (sub CmdSubmission) SubmitFile(verbose bool) error {
 
 	if verbose {
 		fmt.Printf("Uploaded file %s with SHA256 %s\n", filename, *payload.Resources[0].Sha256)
-		fmt.Printf("Submitting file %s for analysis to env %d\n", filename, sub.SandboxEnvId)
+		fmt.Printf("Submitting file %s for analysis to env %d\n", filename, sub.SandboxEnvID)
 	}
 
 	// GOV1 does not accept any network_settings value; omit the field entirely
@@ -128,7 +137,7 @@ func (sub CmdSubmission) SubmitFile(verbose bool) error {
 			Sandbox: []*models.FalconxSandboxParametersV1{
 				{
 					Sha256:          *payload.Resources[0].Sha256,
-					EnvironmentID:   sub.SandboxEnvId,
+					EnvironmentID:   sub.SandboxEnvID,
 					SubmitName:      filename,
 					ActionScript:    sub.ActionScript,
 					NetworkSettings: networkSettings,
@@ -148,7 +157,7 @@ func (sub CmdSubmission) SubmitFile(verbose bool) error {
 	}
 
 	if verbose {
-		fmt.Printf("Successfully submitted %s (env %d)\n", filename, sub.SandboxEnvId)
+		fmt.Printf("Successfully submitted %s (env %d)\n", filename, sub.SandboxEnvID)
 	}
 
 	return nil

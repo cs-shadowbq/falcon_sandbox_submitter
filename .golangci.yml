@@ -1,0 +1,51 @@
+version: "2"
+
+linters:
+  enable:
+    - staticcheck
+    - govet
+    - errcheck
+    - unused
+    - ineffassign
+    - revive
+    - gocritic
+
+formatters:
+  enable:
+    - gofumpt
+
+linters-settings:
+  govet:
+    enable-all: true
+
+  staticcheck:
+    checks:
+      - "all"
+
+  errcheck:
+    check-type-assertions: true
+    check-blank: true
+
+  revive:
+    rules:
+      - name: exported
+      - name: var-naming
+      - name: indent-error-flow
+      - name: error-return
+      - name: error-strings
+      - name: if-return
+      - name: increment-decrement
+
+  gocritic:
+    enabled-tags:
+      - diagnostic
+      - style
+      - performance
+
+formatters-settings:
+  gofumpt:
+    extra-rules: true
+
+issues:
+  max-issues-per-linter: 0
+  max-same-issues: 0

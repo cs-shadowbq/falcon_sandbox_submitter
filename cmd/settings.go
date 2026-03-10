@@ -1,6 +1,8 @@
 /*
 Copyright © 2024-2026 CrowdStrike - Scott MacGregor scott.macgregor@crowdstrike.com
 */
+
+// Package cmd provides the CLI commands for the falcon_sandbox submitter tool.
 package cmd
 
 import (
@@ -11,9 +13,8 @@ import (
 	"github.com/spf13/viper"
 )
 
-var (
-	Version string // set by the build process
-)
+// Version holds the application version string, set by the build process.
+var Version string
 
 // settingsCmd represents the settings command
 var settingsCmd = &cobra.Command{
@@ -21,16 +22,10 @@ var settingsCmd = &cobra.Command{
 	Short: "Print the current configuration settings",
 	Long: `Print the current configuration settings. This command is useful to see the final configuration once all the settings have been applied. 
 	It also shows how to access the global flags and command flags.`,
-	Run: func(cmd *cobra.Command, args []string) {
-		//fmt.Println("Settings called")
-
+	Run: func(_ *cobra.Command, _ []string) {
 		if verbose {
 			fmt.Println("--- Final configuration  ---")
 		}
-		//fmt.Printf("\tVersion: %s\n", Version)
-		//for s, i := range viper.AllSettings() {
-		//	fmt.Printf("\t%s: %v\n", s, i)
-		//}
 
 		keys := viper.AllSettings()
 		var keysSorted []string
@@ -57,11 +52,9 @@ var settingsCmd = &cobra.Command{
 		if verbose {
 			fmt.Println("----------------------------")
 		}
-
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(settingsCmd)
-
 }

@@ -1,6 +1,8 @@
 /*
 Copyright © 2024-2026 CrowdStrike - Scott MacGregor scott.macgregor@crowdstrike.com
 */
+
+// Package cmd provides the CLI commands for the falcon_sandbox submitter tool.
 package cmd
 
 import (
@@ -15,15 +17,17 @@ import (
 
 var (
 	filename        string
-	sandboxEnvId    int32
+	sandboxEnvID    int32
 	actionScript    string
 	networkSettings string
 )
 
+// ValidEnvValues holds the set of valid sandbox environment IDs.
 type ValidEnvValues struct {
 	Values map[int32]bool
 }
 
+// NewValidEnvValues returns a ValidEnvValues populated with all supported environment IDs.
 func NewValidEnvValues() *ValidEnvValues {
 	return &ValidEnvValues{
 		Values: map[int32]bool{
@@ -33,7 +37,8 @@ func NewValidEnvValues() *ValidEnvValues {
 			160: true,
 			200: true,
 			300: true,
-			400: true},
+			400: true,
+		},
 	}
 }
 
@@ -59,10 +64,12 @@ func NewGov1ValidNetworkSettings() *ValidNetworkSettings {
 	}
 }
 
+// ValidActionValues holds the set of valid action script names.
 type ValidActionValues struct {
 	Values map[string]bool
 }
 
+// NewValidActionSettings returns a ValidActionValues populated with all supported action script names.
 func NewValidActionSettings() *ValidActionValues {
 	return &ValidActionValues{
 		Values: map[string]bool{
@@ -70,21 +77,25 @@ func NewValidActionSettings() *ValidActionValues {
 			"default_maxantievasion": true,
 			"default_randomfiles":    true,
 			"default_randomtheme":    true,
-			"default_openie":         true},
+			"default_openie":         true,
+		},
 	}
 }
 
+// ValidNetworkSettings holds the set of valid network settings values.
 type ValidNetworkSettings struct {
 	Values map[string]bool
 }
 
+// NewValidNetworkSettings returns a ValidNetworkSettings populated with all supported network settings.
 func NewValidNetworkSettings() *ValidNetworkSettings {
 	return &ValidNetworkSettings{
 		Values: map[string]bool{
 			"default":   true,
 			"tor":       true,
 			"simulated": true,
-			"offline":   true},
+			"offline":   true,
+		},
 	}
 }
 
@@ -93,14 +104,14 @@ var submitCmd = &cobra.Command{
 	Use:   "submit",
 	Short: "SubCommand to submit a file to the CrowdStrike Falcon Sandbox for analysis.",
 	Long:  `Submit files to the CrowdStrike Falcon Sandbox for malware analysis. This command line tool allows you to submit files to the Falcon Sandbox for analysis against a variety of environments, and network settings.`,
-	RunE: func(cmd *cobra.Command, args []string) error {
+	RunE: func(cmd *cobra.Command, _ []string) error {
 		verbose, _ := cmd.Flags().GetBool("verbose")
 		sub := sandbox.CmdSubmission{
-			FalconClientId:     viper.GetString("clientId"),
+			FalconClientID:     viper.GetString("clientId"),
 			FalconClientSecret: viper.GetString("clientSecret"),
 			ClientCloud:        viper.GetString("clientCloud"),
 			Filename:           filename,
-			SandboxEnvId:       sandboxEnvId,
+			SandboxEnvID:       sandboxEnvID,
 			NetworkSettings:    networkSettings,
 			ActionScript:       actionScript,
 		}
@@ -199,14 +210,16 @@ func init() {
 	submitCmd.Flags().StringVarP(&filename, "filename", "f", "", "The file to submit to the sandbox[ie. sample.exe]")
 	submitCmd.Flags().StringVarP(&actionScript, "action_script", "a", "default", fmt.Sprintf("Runtime script for sandbox analysis: (%v)", getValidActionValues(validActionValues)))
 	submitCmd.Flags().StringVarP(&networkSettings, "network_settings", "n", "default", fmt.Sprintf("Specifies the sandbox network_settings used for analysis: (%v)", getValidNetworkSettings(validNetworkSettings)))
-	submitCmd.Flags().Int32VarP(&sandboxEnvId, "environment", "e", 160, fmt.Sprintf("Specify the Environmental ID: (%v) \n  400: MacOS Catalina 10.15, 64-bit\n  300: Linux Ubuntu 16.04, 64-bit\n  200: Android (static analysis)\n  160: Windows 10, 64-bit\n  140: Windows 11, 64-bit\n  110: Windows 7, 64-bit\n  100: Windows 7, 32-bit\n  NOTE: GOV1 clouds support only: 140, 160", getValidEnvValues(validEnvValues)))
-	submitCmd.MarkFlagRequired("filename")
+	submitCmd.Flags().Int32VarP(&sandboxEnvID, "environment", "e", 160, fmt.Sprintf("Specify the Environmental ID: (%v) \n  400: MacOS Catalina 10.15, 64-bit\n  300: Linux Ubuntu 16.04, 64-bit\n  200: Android (static analysis)\n  160: Windows 10, 64-bit\n  140: Windows 11, 64-bit\n  110: Windows 7, 64-bit\n  100: Windows 7, 32-bit\n  NOTE: GOV1 clouds support only: 140, 160", getValidEnvValues(validEnvValues)))
+	if err := submitCmd.MarkFlagRequired("filename"); err != nil {
+		panic(err)
+	}
 
-	submitCmd.SetFlagErrorFunc(func(cmd *cobra.Command, err error) error {
+	submitCmd.SetFlagErrorFunc(func(_ *cobra.Command, err error) error {
 		return fmt.Errorf("invalid value for a flag: %v", err)
 	})
 
-	submitCmd.PreRunE = func(cmd *cobra.Command, args []string) error {
+	submitCmd.PreRunE = func(cmd *cobra.Command, _ []string) error {
 		// Validate the cloud string before doing anything else.
 		cloud, err := falcon.CloudValidate(viper.GetString("clientCloud"))
 		if err != nil {
