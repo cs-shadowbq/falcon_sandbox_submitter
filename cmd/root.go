@@ -30,10 +30,31 @@ import (
 	"github.com/spf13/viper"
 )
 
+const licenseText = `Copyright © 2024-2026 CrowdStrike - Scott MacGregor
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.`
+
 var (
 	cfgFile           string
 	verbose           bool
 	debug             bool
+	showVersion       bool
 	buildClientId     string // Set by the build process
 	clientId          string
 	buildClientSecret string // Set by the build process
@@ -47,9 +68,17 @@ var rootCmd = &cobra.Command{
 	Use:   "falcon_sandbox",
 	Short: "Submit files to the CrowdStrike Falcon Sandbox for analysis.",
 	Long:  `Submit files to the CrowdStrike Falcon Sandbox for malware analysis. This command line tool allows you to submit files to the Falcon Sandbox for analysis against a variety of environments, and network settings.`,
-	// Uncomment the following line if your bare application
-	// has an action associated with it:
-	// Run: func(cmd *cobra.Command, args []string) { },
+	PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
+		if showVersion {
+			fmt.Printf("falcon_sandbox version %s\n\n%s\n", Version, licenseText)
+			os.Exit(0)
+		}
+		return nil
+	},
+	Run: func(cmd *cobra.Command, args []string) {
+		// reached only when no subcommand and --version not set
+		cmd.Help() //nolint:errcheck
+	},
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
@@ -71,6 +100,7 @@ func init() {
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.falcon_sandbox.yaml)")
 	rootCmd.PersistentFlags().BoolVar(&verbose, "verbose", false, "verbose output")
 	rootCmd.PersistentFlags().BoolVar(&debug, "debug", false, "debug output")
+	rootCmd.PersistentFlags().BoolVar(&showVersion, "version", false, "print version and license then exit")
 
 	rootCmd.PersistentFlags().StringVar(&clientId, "clientId", "", "Falcon CLIENT API ID")
 	rootCmd.PersistentFlags().StringVar(&clientSecret, "clientSecret", "", "Falcon CLIENT SECRET API")
