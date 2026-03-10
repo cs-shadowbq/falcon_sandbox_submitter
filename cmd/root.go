@@ -79,7 +79,7 @@ var rootCmd = &cobra.Command{
 	},
 	Run: func(cmd *cobra.Command, _ []string) {
 		// reached only when no subcommand and --version not set
-		cmd.Help() //nolint:errcheck
+		cmd.Help() //nolint:errcheck // Help() only fails if the output writer fails; nothing useful to do here
 	},
 }
 
@@ -118,20 +118,6 @@ func init() {
 	cobra.CheckErr(viper.BindPFlag("debug", rootCmd.PersistentFlags().Lookup("debug")))
 	viper.SetDefault("debug", false)
 
-	// if buildClientID is nil set it to ""
-	/*
-		if buildClientID == "" {
-			buildClientID = "exClientId"
-		}
-
-		if buildClientSecret == "" {
-			buildClientSecret = "exClientSecret"
-		}
-
-		if buildClientCloud == "" {
-			buildClientCloud = "exClientCloud"
-		}
-	*/
 	cobra.CheckErr(viper.BindPFlag("clientId", rootCmd.PersistentFlags().Lookup("clientId")))
 	viper.SetDefault("clientId", buildClientID)
 	cobra.CheckErr(viper.BindPFlag("clientSecret", rootCmd.PersistentFlags().Lookup("clientSecret")))
@@ -183,7 +169,7 @@ func debugOut(phase string) {
 
 		for _, key := range keys {
 			if key == "clientsecret" {
-				secret, _ := viper.Get(key).(string)
+				secret := viper.GetString(key)
 				if len(secret) > 4 {
 					fmt.Printf("\t%s: %v\n", key, secret[:4]+"********")
 				} else {

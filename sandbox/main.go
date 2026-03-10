@@ -42,9 +42,9 @@ type CmdSubmission struct {
 	FalconClientSecret string
 	ClientCloud        string
 	Filename           string
-	SandboxEnvID       int32
 	NetworkSettings    string
 	ActionScript       string
+	SandboxEnvID       int32
 }
 
 // maskSecret returns the first 4 characters of a secret followed by asterisks, or
@@ -57,7 +57,7 @@ func maskSecret(s string) string {
 }
 
 // SubmitFile submits the file described by sub to the CrowdStrike Falcon Sandbox.
-func (sub CmdSubmission) SubmitFile(verbose bool) error {
+func (sub *CmdSubmission) SubmitFile(verbose bool) error {
 	cloud, err := falcon.CloudValidate(sub.ClientCloud)
 	if err != nil {
 		return fmt.Errorf("invalid cloud region %q: %w", sub.ClientCloud, err)
@@ -79,7 +79,7 @@ func (sub CmdSubmission) SubmitFile(verbose bool) error {
 	}
 	filename := filepath.Base(fullFilename)
 
-	fileHandler, err := os.Open(fullFilename)
+	fileHandler, err := os.Open(fullFilename) //nolint:gosec // G304: path is resolved and cleaned via filepath.Abs before use
 	if err != nil {
 		return fmt.Errorf("failed to open file %q: %w", fullFilename, err)
 	}

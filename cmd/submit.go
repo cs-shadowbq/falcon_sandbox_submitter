@@ -105,7 +105,10 @@ var submitCmd = &cobra.Command{
 	Short: "SubCommand to submit a file to the CrowdStrike Falcon Sandbox for analysis.",
 	Long:  `Submit files to the CrowdStrike Falcon Sandbox for malware analysis. This command line tool allows you to submit files to the Falcon Sandbox for analysis against a variety of environments, and network settings.`,
 	RunE: func(cmd *cobra.Command, _ []string) error {
-		verbose, _ := cmd.Flags().GetBool("verbose")
+		verbose, err := cmd.Flags().GetBool("verbose")
+		if err != nil {
+			return fmt.Errorf("failed to get verbose flag: %w", err)
+		}
 		sub := sandbox.CmdSubmission{
 			FalconClientID:     viper.GetString("clientId"),
 			FalconClientSecret: viper.GetString("clientSecret"),
@@ -239,17 +242,26 @@ func init() {
 			allowedNetworkSettings = NewGov1ValidNetworkSettings()
 		}
 
-		environment, _ := cmd.Flags().GetInt32("environment")
+		environment, err := cmd.Flags().GetInt32("environment")
+		if err != nil {
+			return fmt.Errorf("failed to get environment flag: %w", err)
+		}
 		if !allowedEnvs.Values[environment] {
 			return fmt.Errorf("invalid value for environment. Allowed values for cloud %q: %v", cloud.String(), getValidEnvValues(allowedEnvs))
 		}
 
-		actionScript, _ := cmd.Flags().GetString("action_script")
+		actionScript, err := cmd.Flags().GetString("action_script")
+		if err != nil {
+			return fmt.Errorf("failed to get action_script flag: %w", err)
+		}
 		if !validActionValues.Values[actionScript] {
 			return fmt.Errorf("invalid value for action_script. It must be %v", getValidActionValues(validActionValues))
 		}
 
-		networkSettings, _ := cmd.Flags().GetString("network_settings")
+		networkSettings, err := cmd.Flags().GetString("network_settings")
+		if err != nil {
+			return fmt.Errorf("failed to get network_settings flag: %w", err)
+		}
 		if !allowedNetworkSettings.Values[networkSettings] {
 			return fmt.Errorf("invalid value for network_settings. Allowed values for cloud %q: %v", cloud.String(), getValidNetworkSettings(allowedNetworkSettings))
 		}

@@ -38,7 +38,7 @@ var settingsCmd = &cobra.Command{
 		for _, key := range keysSorted {
 			if key == "clientsecret" {
 				// Mask all but the first 4 characters of the secret.
-				secret, _ := viper.Get(key).(string)
+				secret := viper.GetString(key)
 				if len(secret) > 4 {
 					fmt.Printf("\t%s: %v\n", key, secret[:4]+"********")
 				} else {
