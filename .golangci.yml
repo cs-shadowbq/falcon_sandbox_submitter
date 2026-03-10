@@ -10,46 +10,44 @@ linters:
     - revive
     - gocritic
     - gosec
+  settings:
+    govet:
+      enable-all: true
+
+    staticcheck:
+      checks:
+        - "all"
+
+    errcheck:
+      check-type-assertions: true
+      check-blank: true
+
+    revive:
+      rules:
+        - name: exported
+        - name: var-naming
+        - name: indent-error-flow
+        - name: error-return
+        - name: error-strings
+        - name: if-return
+        - name: increment-decrement
+
+    gocritic:
+      enabled-tags:
+        - diagnostic
+        - style
+        - performance
+
+    gosec:
+      confidence: medium
+      severity: medium
 
 formatters:
   enable:
     - gofumpt
-
-linters-settings:
-  govet:
-    enable-all: true
-
-  staticcheck:
-    checks:
-      - "all"
-
-  errcheck:
-    check-type-assertions: true
-    check-blank: true
-
-  revive:
-    rules:
-      - name: exported
-      - name: var-naming
-      - name: indent-error-flow
-      - name: error-return
-      - name: error-strings
-      - name: if-return
-      - name: increment-decrement
-
-  gocritic:
-    enabled-tags:
-      - diagnostic
-      - style
-      - performance
-
-  gosec:
-    confidence: medium
-    severity: medium
-
-formatters-settings:
-  gofumpt:
-    extra-rules: true
+  settings:
+    gofumpt:
+      extra-rules: true
 
 issues:
   max-issues-per-linter: 0
