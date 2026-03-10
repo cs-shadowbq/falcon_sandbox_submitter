@@ -1,10 +1,11 @@
 /*
-Copyright © 2024 CrowdStrike - Scott MacGregor scott.macgregor@crowdstrike.com
+Copyright © 2024-2026 CrowdStrike - Scott MacGregor scott.macgregor@crowdstrike.com
 */
 package cmd
 
 import (
 	"fmt"
+	"sort"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -32,17 +33,22 @@ var settingsCmd = &cobra.Command{
 		//}
 
 		keys := viper.AllSettings()
-		//sort keys
 		var keysSorted []string
 		for key := range keys {
 			keysSorted = append(keysSorted, key)
 		}
+		sort.Strings(keysSorted)
 
 		// get the keys and print them in sorted order
 		for _, key := range keysSorted {
 			if key == "clientsecret" {
-				// Print the clientSecret first 4 characters then the rest as *
-				fmt.Printf("\t%s: %v\n", key, viper.Get(key).(string)[:4]+"********")
+				// Mask all but the first 4 characters of the secret.
+				secret, _ := viper.Get(key).(string)
+				if len(secret) > 4 {
+					fmt.Printf("\t%s: %v\n", key, secret[:4]+"********")
+				} else {
+					fmt.Printf("\t%s: %v\n", key, "********")
+				}
 			} else {
 				fmt.Printf("\t%s: %v\n", key, viper.Get(key))
 			}

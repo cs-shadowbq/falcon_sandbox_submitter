@@ -10,19 +10,19 @@ PACKAGE_VERSION := $(shell $(cat) VERSION)
 
 GOLD_FLAGS=-X github.com/cs-shadowbq/falcon_sandbox_submitter/cmd.Version=$(PACKAGE_VERSION)
 
-SILVER_FALGS := 
+SILVER_FLAGS := 
 
 # Combine SILVER_FLAGS if Variable not empty
 ifdef FALCON_CLIENT_ID
-SILVER_FALGS+=-X github.com/cs-shadowbq/falcon_sandbox_submitter/cmd.buildClientId=${FALCON_CLIENT_ID}
+SILVER_FLAGS+=-X github.com/cs-shadowbq/falcon_sandbox_submitter/cmd.buildClientId=${FALCON_CLIENT_ID}
 endif
 
 ifdef FALCON_CLIENT_SECRET
-SILVER_FALGS+= -X github.com/cs-shadowbq/falcon_sandbox_submitter/cmd.buildClientSecret=${FALCON_CLIENT_SECRET}
+SILVER_FLAGS+= -X github.com/cs-shadowbq/falcon_sandbox_submitter/cmd.buildClientSecret=${FALCON_CLIENT_SECRET}
 endif
 
 ifdef FALCON_API_BASE_URL
-SILVER_FALGS+= -X github.com/cs-shadowbq/falcon_sandbox_submitter/cmd.buildApiBaseUrl=${FALCON_API_BASE_URL}
+SILVER_FLAGS+= -X github.com/cs-shadowbq/falcon_sandbox_submitter/cmd.buildApiBaseUrl=${FALCON_API_BASE_URL}
 endif
 
 BUILD_DOCS := README.md LICENSE example_config.yml
@@ -44,9 +44,9 @@ build:
 	@echo
 	@echo "\033[32mBuilding ----> \033[m"
 	
-	env GOOS=linux GOARCH=amd64 go build -ldflags "$(GOLD_FLAGS) ${SILVER_FALGS}" -o build/falcon_sandbox_linux_amd64 main.go
-	env GOOS=windows GOARCH=amd64 go build -ldflags "$(GOLD_FLAGS) ${SILVER_FALGS}" -o build/falcon_sandbox.exe main.go
-	env GOOS=darwin GOARCH=amd64 go build -ldflags "$(GOLD_FLAGS) ${SILVER_FALGS}" -o build/falcon_sandbox_darwin_amd64 main.go
+	env GOOS=linux GOARCH=amd64 go build -ldflags "$(GOLD_FLAGS) ${SILVER_FLAGS}" -o build/falcon_sandbox_linux_amd64 main.go
+	env GOOS=windows GOARCH=amd64 go build -ldflags "$(GOLD_FLAGS) ${SILVER_FLAGS}" -o build/falcon_sandbox.exe main.go
+	env GOOS=darwin GOARCH=amd64 go build -ldflags "$(GOLD_FLAGS) ${SILVER_FLAGS}" -o build/falcon_sandbox_darwin_amd64 main.go
 
 clean:
 	@echo
